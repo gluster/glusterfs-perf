@@ -1,0 +1,58 @@
+---
+# Install the packages needed to fetch GlusterFS project and build
+# We need the epel release for userspace rcu.
+- name: Initialise the packages that have to be installed
+  set_fact:
+     packages:
+       - http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+       - git
+       - gcc
+       - autoconf
+       - automake
+       - libtool
+       - flex
+       - bison
+       - openssl-devel
+       - libuuid-devel
+       - libacl-devel
+       - libxml2-devel
+       - make
+
+- name: Install the necessary packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+
+- name: Install userspace-rcu-devel
+  yum:
+    name: userspace-rcu-devel
+    state: present
+
+- name: Clone glusterfs git repository
+  git:
+    clone: yes
+    update: yes
+    dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+    repo: https://github.com/gluster/glusterfs.git
+
+# Run autogen and configure to generate makefile
+- name: Generate configure file
+  command: ./autogen.sh
+  args:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+
+- name: Run configure to generate Makefile for building GlusterFS
+  command: ./configure
+  args:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+
+- name: Build and install GlusterFS
+  make:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+    target: install
+
+# Can't do make install in a single command witht his module
+- name: Clean build directory
+  make:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+    target: clean

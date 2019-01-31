@@ -1,0 +1,45 @@
+---
+- name: Setup a GlusterFS cluster from source tree
+  remote_user: root
+  gather_facts: true
+  hosts: all
+  vars:
+    gluster_infra_disktype: RAID6
+    gluster_infra_diskcount: 12
+    gluster_infra_stripe_unit_size: 128
+    gluster_infra_volume_groups:
+      - vgname: vg_sdb
+        pvname: /dev/sdb
+    gluster_infra_thinpools:
+      - vgname: vg_sdb
+        thinpoolname: thinpool_vg_sdb
+        thinpoolsize: 45G
+        poolmetadatasize: 1G
+    gluster_infra_lv_logicalvols:
+      - vgname: vg_sdb
+        thinpool: thinpool_vg_sdb
+        lvname: gluster_lv_disk1
+        lvsize: 200G
+    # Mount the devices
+    gluster_infra_mount_devices:
+      - { path: '/gluster_bricks', vgname: vg_sdb, lvname: gluster_lv_disk1 }
+    gluster_infra_fw_ports:
+      - 2049/tcp
+      - 24007-24050/tcp
+      - 54321/tcp
+      - 5900/tcp
+      - 5900-6923/tcp
+      - 5666/tcp
+      - 16514/tcp
+    gluster_infra_fw_permanent: true
+    gluster_infra_fw_state: enabled
+    gluster_infra_fw_zone: public
+    glusterfs_perf_volume: perfvol
+    glusterfs_perf_bricks: /gluster_bricks/perfbrick
+    glusterfs_perf_hosts: "{{ groups['all'] }}"
+    glusterfs_perf_replica_count: 2
+    glusterfs_perf_server: "{{ groups['all'][0] }}"
+
+  roles:
+    - gluster.infra
+    - glusterfs.perf
