@@ -18,7 +18,7 @@
 # Create a GlusterFS volume
 - name: Create a volume
   gluster_volume:
-     state: "{{ glusterfs_perf_state | default('present') }}"
+     state: "{{ glusterfs_perf_volume_state | default('present') }}"
      volume: "{{ glusterfs_perf_volume }}"
      bricks: "{{ glusterfs_perf_bricks }}"
      cluster: "{{ glusterfs_perf_hosts }}"
