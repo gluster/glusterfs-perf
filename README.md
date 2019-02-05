@@ -30,8 +30,9 @@ Role Variables
 | glusterfs_perf_redundancy_count | | Omitted by default | Redundancy count for the volume |
 | glusterfs_perf_force | yes/no | no | Whether GlusterFS volume should be created by force |
 | glusterfs_perf_mountpoint | | /mnt/glusterfs | GlusterFS mount point |
-| glusterfs_perf_server | | UNDEF | Server to use whille mounting GlusterFS volume |
-
+| glusterfs_perf_server | | UNDEF | Server to use while mounting GlusterFS volume |
+| glusterfs_perf_client | | glusterfs_perf_server | Client on which to mount the volume|
+| glusterfs_perf_resdir | | /var/tmp/glusterperf | Directory to store perf results|
 
 Example Playbook
 ----------------

@@ -5,36 +5,14 @@
   tags:
     - prereq
 
-# Start glusterd services. A non-zero return code 1 is thrown when we
-# try to start glusterd when it is started already. So, we specifically
-# check for 127 (command not found).
-- name: Start glusterd on the nodes if not already started
-  command:
-  args:
-    argv: glusterd
-  register: result
-  failed_when: result.rc == 127
+# Setup GlusterFS cluster
+- name: Setup GlusterFS cluster
+  import_tasks: glustervol.yml
+  tags:
+    - clustersetup
 
-# Create a GlusterFS volume
-- name: Create a volume
-  gluster_volume:
-     state: "{{ glusterfs_perf_volume_state | default('present') }}"
-     volume: "{{ glusterfs_perf_volume }}"
-     bricks: "{{ glusterfs_perf_bricks }}"
-     cluster: "{{ glusterfs_perf_hosts }}"
-     transport: "{{ glusterfs_perf_transport | default('tcp') }}"
-     replicas: "{{ glusterfs_perf_replica_count | default(omit) }}"
-     arbiters: "{{ glusterfs_perf_arbiter_count | default(omit)}}"
-     disperses: "{{ glusterfs_perf_disperse_count | default(omit) }}"
-     redundancies: "{{ glusterfs_perf_redundancy_count | default(omit) }}"
-     force: "{{ glusterfs_perf_force | default('no') }}"
-  run_once: true
-  when: glusterfs_perf_volume is defined
-
-- name: Mount the volume
-  mount:
-     path: "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
-     state: mounted
-     fstype: glusterfs
-     src: "{{ glusterfs_perf_server }}:{{ glusterfs_perf_volume}}"
-  when: glusterfs_perf_server is defined
+# Run the performance tool on the cluster
+- name: Run smallfile perf tool
+  import_tasks: perftests.yml
+  tags:
+    - runperf

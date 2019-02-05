@@ -37,7 +37,7 @@
     glusterfs_perf_volume: perfvol
     glusterfs_perf_bricks: /gluster_bricks/perfbrick
     glusterfs_perf_hosts: "{{ groups['all'] }}"
-    glusterfs_perf_replica_count: 2
+    glusterfs_perf_replica_count: 3
     glusterfs_perf_server: "{{ groups['all'][0] }}"
 
   roles:

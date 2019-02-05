@@ -35,6 +35,13 @@
     dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
     repo: https://github.com/gluster/glusterfs.git
 
+- name: Clone smallfile perf git repository
+  git:
+    clone: yes
+    update: yes
+    dest: "{{ smallfile_perf_git_dest | default('/usr/src/smallfile') }}"
+    repo: https://github.com/distributed-system-analysis/smallfile.git
+
 # Run autogen and configure to generate makefile
 - name: Generate configure file
   command: ./autogen.sh
