@@ -1,2 +1,3 @@
 ---
 # defaults file for glusterfs-perf
+glusterfs_perf_resdir: /var/tmp/glusterperf/{{ansible_date_time.date}}

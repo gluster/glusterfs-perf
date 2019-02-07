@@ -1,7 +1,7 @@
 ---
 - name: Setup a GlusterFS cluster from source tree
   remote_user: root
-  gather_facts: true
+  gather_facts: false
   hosts: all
   vars:
     gluster_infra_disktype: RAID6
@@ -26,6 +26,7 @@
     gluster_infra_fw_ports:
       - 2049/tcp
       - 24007-24050/tcp
+      - 49100-49500/tcp
       - 54321/tcp
       - 5900/tcp
       - 5900-6923/tcp

@@ -1,0 +1,39 @@
+---
+- name: Clean up GlusterFS mountpoint
+  file:
+     state: absent
+     path: "{{glusterfs_perf_mountpoint|default('/mnt/glusterfs')}}/{{item}}"
+  with_items:
+     - file_dstdir
+     - file_srcdir
+     - network_shared
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Run the perf tool on the mountpoint
+- name: Run create & delete tests
+  command:
+  args:
+    argv:
+      - /usr/src/smallfile/smallfile_cli.py
+      - --stonewall
+      - N
+      - --operation
+      - "{{ item }}"
+      - --threads
+      - 8
+      - --file-size
+      - 64
+      - --files
+      - 2500
+      - --top
+      - "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
+      - --host-set
+      - "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+      - --output-json
+      - "{{glusterfs_perf_resdir}}/{{item}}"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  with_items:
+     - create
+     - delete

@@ -1,4 +1,14 @@
 ---
+# Gather date time data
+- name: Gather facts to determine date
+  setup:
+    gather_subset:
+      - '!all'
+      - '!any'
+      - date_time
+  tags:
+    - always
+
 # tasks file for glusterfs-perf
 - name: Pre-requisites for setting up Gluster HCI
   import_tasks: prereq.yml
