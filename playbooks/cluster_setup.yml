@@ -1,7 +1,7 @@
 ---
 - name: Setup a GlusterFS cluster from source tree
   remote_user: root
-  gather_facts: false
+  gather_facts: true
   hosts: all
   vars:
     gluster_infra_disktype: RAID6

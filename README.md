@@ -54,6 +54,16 @@ Example Playbook
     - glusterfs.perf
 ```
 
+Setting up and running the tests
+--------------------------------
+Bootstrapping: Ensure Ansible >= 2.7 is present.
+Install the roles gluster-ansible-infra and glusterfs-perf.
+Copy the playbook under playbooks/cluster_setup.yml directory in the
+glusterfs-perf role and change the variables appropriately and run the command:
+
+# gluster-ansible -i <inventory-file> cluster_setup.yml
+
+
 License
 -------
 

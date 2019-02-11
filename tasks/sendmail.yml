@@ -1,0 +1,34 @@
+---
+# grep and build results
+- name: Collect results in a file
+  shell:
+     grep 'files-per-sec' {{ glusterfs_perf_resdir }}/* > {{ glusterfs_perf_ofile }}
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+- name: Read the contents of the output file
+  slurp:
+     src: "{{ glusterfs_perf_ofile }}"
+  register: msgbody
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+- name: Send the attachment as mail
+  mail:
+     host: 127.0.0.1
+     subject: Nightly perf test results - {{ ansible_date_time.date }}
+     body: "{{ msgbody['content'] | b64decode }}"
+     from: "{{ glusterfs_perf_mail_sender | default('sac@redhat.com') }}"
+     to: "{{ glusterfs_perf_to_list | default('atumball@redhat.com') }}"
+     attach: "{{ glusterfs_perf_ofile }}"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  no_log: true
+
+- name: Remove the temporary results file
+  file:
+     path: "{{ glusterfs_perf_ofile }}"
+     state: absent
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+

@@ -26,3 +26,9 @@
   import_tasks: perftests.yml
   tags:
     - runperf
+
+# Send mail attaching the results
+- name: Send mail attaching the results
+  import_tasks: sendmail.yml
+  tags:
+    - mail
