@@ -31,13 +31,16 @@
 - name: Clone glusterfs git repository
   git:
     clone: yes
+    depth: 1
     update: yes
     dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
-    repo: https://github.com/gluster/glusterfs.git
+    repo: "{{ glusterfs_perf_git_repo | default('https://github.com/gluster/glusterfs.git') }}"
+    refspec: "{{ glusterfs_perf_git_refspec }}"
 
 - name: Clone smallfile perf git repository
   git:
     clone: yes
+    depth: 1
     update: yes
     dest: "{{ smallfile_perf_git_dest | default('/usr/src/smallfile') }}"
     repo: https://github.com/distributed-system-analysis/smallfile.git
