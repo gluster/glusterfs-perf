@@ -36,6 +36,9 @@ Role Variables
 | glusterfs_perf_mail_sender || sac@redhat.com | email address which has to be listed in the from field of the status email. |
 | glusterfs_perf_to_list || UNDEF | email addresses of the list of people to whom the report has to be sent. Not this is not comma separated addresses, but yaml list. Plese see playbooks/cluster_setup.yml for an example. |
 | glusterfs_perf_ofile || /tmp/perf-results-<date> | Output file where results have to be stored |
+| glusterfs_perf_git_repo | | https://github.com/gluster/glusterfs.git | Set the URL of new repo to be cloned |
+| glusterfs_perf_git_refspec | | - | Details of particular patch to be fetched. Check the details in 'Download' section in gerrit for refspec details |
+
 
 Example Playbook
 ----------------

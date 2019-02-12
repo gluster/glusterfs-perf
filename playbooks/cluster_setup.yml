@@ -35,6 +35,18 @@
     gluster_infra_fw_permanent: true
     gluster_infra_fw_state: enabled
     gluster_infra_fw_zone: public
+
+    # Point to the git repo you want to clone from
+    #
+    # glusterfs_perf_git_repo: https://review.gluster.org/glusterfs
+
+    # check which refspec you need to fetch. If you want to test particular
+    # patch, you would need to set it up. Remember to uncomment above variable
+    # too, if you want to use this. (Visible when you press 'Download'
+    # in https://review.gluster.org, particular patch.
+    #
+    # glusterfs_perf_git_refspec: refs/changes/36/20636/21
+
     glusterfs_perf_volume: perfvol
     glusterfs_perf_bricks: /gluster_bricks/perfbrick
     glusterfs_perf_hosts: "{{ groups['all'] }}"
