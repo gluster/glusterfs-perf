@@ -5,18 +5,36 @@
   set_fact:
      packages:
        - http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-       - git
-       - gcc
        - autoconf
        - automake
-       - libtool
-       - flex
        - bison
-       - openssl-devel
-       - libuuid-devel
+       - e2fsprogs-devel
+       - firewalld
+       - flex
+       - fuse-devel
+       - gcc
+       - git
        - libacl-devel
+       - libaio-devel
+       - libattr-devel
+       - libcmocka-devel
+       - libibverbs-devel
+       - librdmacm-devel
+       - libtirpc-devel
+       - libtool
+       - libuuid-devel
        - libxml2-devel
+       - lvm2-devel
        - make
+       - ncurses-devel
+       - openssl-devel
+       - python-ctypes
+       - python-devel
+       - python-simplejson
+       - rdma-core-devel
+       - readline-devel
+       - sqlite-devel
+       - systemd
 
 - name: Install the necessary packages
   yum:
