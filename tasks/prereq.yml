@@ -35,7 +35,7 @@
     update: yes
     dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
     repo: "{{ glusterfs_perf_git_repo | default('https://github.com/gluster/glusterfs.git') }}"
-    refspec: "{{ glusterfs_perf_git_refspec }}"
+    refspec: "{{ glusterfs_perf_git_refspec | default(omit) }}"
 
 - name: Clone smallfile perf git repository
   git:
