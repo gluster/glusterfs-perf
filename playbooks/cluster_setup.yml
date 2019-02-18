@@ -49,7 +49,7 @@
     # glusterfs_perf_git_refspec: refs/changes/36/20636/21
 
     #glusterfs_perf_resdir: /var/tmp/glusterperf/{{ansible_date_time.date}}-{{ glusterfs_perf_git_version | default('master') }}
-    glusterfs_perf_resdir: {{ lookup('pipe','date +%Y-%m-%d-%H-%M-%S') }}
+    glusterfs_perf_resdir: "{{ lookup('pipe','date +%Y-%m-%d-%H-%M-%S') }}"
     glusterfs_perf_volume: perfvol
     glusterfs_perf_bricks: /gluster_bricks/perfbrick
     glusterfs_perf_hosts: "{{ groups['servers'] }}"
