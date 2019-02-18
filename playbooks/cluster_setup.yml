@@ -52,9 +52,10 @@
     glusterfs_perf_resdir: {{ lookup('pipe','date +%Y-%m-%d-%H-%M-%S') }}
     glusterfs_perf_volume: perfvol
     glusterfs_perf_bricks: /gluster_bricks/perfbrick
-    glusterfs_perf_hosts: "{{ groups['all'] }}"
+    glusterfs_perf_hosts: "{{ groups['servers'] }}"
     glusterfs_perf_replica_count: 3
-    glusterfs_perf_server: "{{ groups['all'][0] }}"
+    glusterfs_perf_server: "{{ groups['servers'][0] }}"
+    glusterfs_perf_client: benki6.lab.eng.blr.redhat.com
     glusterfs_perf_to_list:
       - sac@redhat.com
       - atumball@redhat.com
