@@ -70,8 +70,16 @@
   args:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
 
+# The test expects the version to be a string of type vX.string where X is
+# an integer
+- name: Configure without-libtirpc if version is set
+  set_fact:
+     wolibtirpc: "--without-libtirpc"
+  when: glusterfs_perf_git_version is not defined or
+        glusterfs_perf_git_version[1]|int < 6
+
 - name: Run configure to generate Makefile for building GlusterFS
-  command: ./configure
+  command: ./configure "{{ wolibtirpc | default('') }}"
   args:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
 
@@ -84,4 +92,4 @@
 - name: Clean build directory
   make:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
-    target: clean
+    target: distclean
