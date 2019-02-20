@@ -9,6 +9,11 @@
   tags:
     - always
 
+# Convert list of clients to comma-separated string
+- name: Create a comma-separated list of clients
+  set_fact:
+        gluster_clients: "{{ glusterfs_perf_clients|join(',') }}"
+
 # tasks file for glusterfs-perf
 - name: Pre-requisites for setting up Gluster HCI
   import_tasks: prereq.yml

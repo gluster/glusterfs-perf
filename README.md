@@ -31,7 +31,8 @@ Role Variables
 | glusterfs_perf_force | yes/no | no | Whether GlusterFS volume should be created by force |
 | glusterfs_perf_mountpoint | | /mnt/glusterfs | GlusterFS mount point |
 | glusterfs_perf_server | | UNDEF | Server to use while mounting GlusterFS volume |
-| glusterfs_perf_client | | glusterfs_perf_server | Client on which to mount the volume|
+| glusterfs_perf_clients | | | Clients on which to mount the volume and run the tests|
+| glusterfs_perf_client | | First among the list of clients | Client on which to mount the perf test is launched |
 | glusterfs_perf_resdir | | /var/tmp/glusterperf | Directory to store perf results|
 | glusterfs_perf_mail_sender || sac@redhat.com | email address which has to be listed in the from field of the status email. |
 | glusterfs_perf_to_list || UNDEF | email addresses of the list of people to whom the report has to be sent. Not this is not comma separated addresses, but yaml list. Plese see playbooks/cluster_setup.yml for an example. |

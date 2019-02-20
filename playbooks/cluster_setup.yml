@@ -55,7 +55,8 @@
     glusterfs_perf_hosts: "{{ groups['servers'] }}"
     glusterfs_perf_replica_count: 3
     glusterfs_perf_server: "{{ groups['servers'][0] }}"
-    glusterfs_perf_client: benki6.lab.eng.blr.redhat.com
+    glusterfs_perf_clients: "{{ groups['clients'] }}"
+    glusterfs_perf_client: "{{ groups['clients'][0] }}"
     glusterfs_perf_to_list:
       - sac@redhat.com
       - atumball@redhat.com
@@ -70,8 +71,9 @@
           state: absent
           path: "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
        ignore_errors: true
-       delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+       delegate_to: "{{ item | default(glusterfs_perf_server) }}"
        run_once: true
+       with_items: "{{ glusterfs_perf_clients }}"
 
      - name: Stop and delete the GlusterFS volume (if present, else ignore error)
        gluster_volume:
@@ -79,6 +81,7 @@
           volume: "{{ glusterfs_perf_volume }}"
           force: yes
        run_once: true
+       delegate_to: "{{ glusterfs_perf_server }}"
        ignore_errors: true
 
      - name: Stop the glusterd daemon (kill it)

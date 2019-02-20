@@ -29,7 +29,7 @@
       - --top
       - "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
       - --host-set
-      - "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+      - "{{ gluster_clients }}"
       - --output-json
       - "{{glusterfs_perf_resdir}}/{{item}}"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
