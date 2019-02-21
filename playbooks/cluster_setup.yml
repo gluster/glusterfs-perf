@@ -88,6 +88,12 @@
        command: pkill -9 glusterd
        ignore_errors: true
 
+     - name: Clean up /var/lib/glusterd
+       file:
+           state: absent
+           path: /var/lib/glusterd
+       ignore_errors: true
+
      # Remove unmount and delete the volume groups
      - name: umount the GlusterFS bricks (if mounted, else ignore errors)
        mount:
