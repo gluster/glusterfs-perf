@@ -30,6 +30,7 @@
        - python-ctypes
        - python-devel
        - python-simplejson
+       - python-matplotlib
        - rdma-core-devel
        - readline-devel
        - sqlite-devel
