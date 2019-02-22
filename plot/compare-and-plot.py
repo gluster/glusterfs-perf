@@ -2,6 +2,10 @@
 
 # has dependency of installing on fedora 'python3-matplotlib'
 import numpy as np
+import matplotlib as mpl
+# below is critical for running over ssh/ansible
+if os.environ.get('DISPLAY','') == '':
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 import csv
 import json
