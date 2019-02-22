@@ -5,7 +5,7 @@
      #grep 'files-per-sec' {{ glusterfs_perf_resdir }}/* > {{ glusterfs_perf_ofile }}
      # TODO: handle the long arguments
      python /etc/ansible/roles/glusterfs.perf/plot/compare-and-plot.py -r {{ glusterfs_perf_resdir }} -c /etc/ansible/roles/glusterfs.perf/data/results.csv > {{ glusterfs_perf_ofile }}
-     echo {{ glusterfs_perf_git_version }} {{ glusterfs_perf_git_refspec }} >> {{ glusterfs_perf_ofile }}
+     echo {{ glusterfs_perf_git_version|default('') }} {{ glusterfs_perf_git_refspec|default('') }} >> {{ glusterfs_perf_ofile }}
      exit 0
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
