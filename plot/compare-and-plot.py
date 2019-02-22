@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import os
 # has dependency of installing on fedora 'python3-matplotlib'
 import numpy as np
 import matplotlib as mpl
@@ -28,7 +29,10 @@ def plot_graph(bars1, bars2, plot_label, target_file, b1_label, b2_label):
     # Add xticks on the middle of the group bars
     plt.xlabel('group', fontweight='bold')
 
-    plt.xticks([r + barWidth for r in range(len(bars1))], plot_label)
+    plt.xticks([r + barWidth for r in range(len(bars1))], plot_label, rotation=90)
+
+    # Increase the bottom space
+    plt.subplots_adjust(bottom=0.3)
 
     # Create legend & Show graphic
     plt.legend()
@@ -74,7 +78,7 @@ def dump_results(ops, ref, t):
         b1.append(res)
         b2.append(cur)
         op.append(key)
-        print ("%s: %f -> %f (%f%%)" % (key, res, cur, ((cur - res) / res) * 100))
+        print ("%-15s %13f -> %13f %11f%%" % (key, res, cur, ((cur - res) / res) * 100))
 
     plot_graph(b1,b2, op, "%s/%s-%s.png" % (result_dir, t, ops[0]), t, current_tag)
 
