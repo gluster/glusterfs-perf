@@ -23,6 +23,7 @@
      redundancies: "{{ glusterfs_perf_redundancy_count | default(omit) }}"
      force: "{{ glusterfs_perf_force | default('no') }}"
   run_once: true
+  delegate_to: "{{ glusterfs_perf_server }}"
   when: glusterfs_perf_volume is defined
 
 - name: Mount the volume
