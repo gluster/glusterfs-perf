@@ -23,6 +23,7 @@
 # Setup GlusterFS cluster
 - name: Setup GlusterFS cluster
   import_tasks: glustervol.yml
+  delegate_to: "{{ glusterfs_perf_server }}"
   tags:
     - clustersetup
 
