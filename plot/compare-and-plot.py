@@ -22,7 +22,7 @@ def plot_graph(ref, cur, plot_label, tags):
     r1 = np.arange(len(cur))
 
     # Make the plot
-    plt.bar(r1, [cur[k] for k in cur], color='#7f6d5f', width=barWidth, edgecolor='white', label="this")
+    plt.bar(r1, [cur[k] for k in plot_label], color='#7f6d5f', width=barWidth, edgecolor='white', label="this")
 
     prev_rtag = r1
     for t in tags:
@@ -41,7 +41,8 @@ def plot_graph(ref, cur, plot_label, tags):
         plt.bar(rtag, vtag, color='#%02X%02X%02X' % (r(), r(), r()), width=barWidth, edgecolor='white', label=t)
 
     # Add xticks on the middle of the group bars
-    plt.xlabel('group', fontweight='bold')
+    plt.xlabel('type of tests', fontweight='bold')
+    plt.ylabel('files/sec')
 
     plt.xticks([r + barWidth for r in range(len(cur))], plot_label, rotation=90)
 
