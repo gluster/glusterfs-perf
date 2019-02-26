@@ -1,0 +1,33 @@
+---
+# Do CLEANUP_MNT
+- name: Clean up GlusterFS mountpoint
+  file:
+     state: absent
+     path: "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}/*"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  ignore_errors: true
+  when: fiojob == "CLEANUP_MNT"
+
+# Do DROP_CACHE
+- name: Drop cache
+  include_tasks: ../drop-cache.yml
+  when: fiojob == "DROP_CACHE"
+
+# Prepare the job.ini file for fio
+- name: Prepare job.ini for FIO run
+  shell: echo -e "{{ fiojob }}" > {{ glusterfs_perf_resdir }}/fio/{{ idx }}.job.ini
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  when: (fiojob != "DROP_CACHE") and (fiojob != "CLEANUP_MNT")
+
+- name: Debug Info
+  debug: msg="Running fio job {{ fiojob }}"
+  when: (fiojob != "DROP_CACHE") and (fiojob != "CLEANUP_MNT")
+
+# Run the FIO job
+- name: Run FIO job
+  shell: fio {{ glusterfs_perf_resdir }}/fio/{{ idx }}.job.ini --output-format=json --client={{ glusterfs_perf_resdir }}/fio/host.list > {{ glusterfs_perf_resdir }}/fio/{{ idx }}.results.out
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  when: (fiojob != "DROP_CACHE") and (fiojob != "CLEANUP_MNT")

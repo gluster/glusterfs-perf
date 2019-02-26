@@ -1,0 +1,37 @@
+---
+- name: Cleanup the postgres setup
+  command: dropdb {{ glusterfs_perf_pgbench_db_name }}
+  become: yes
+  become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  ignore_errors: true
+
+# Stop service Postgresql
+- name: Stop Service Postgresql
+  expect:
+    command: sudo -u postgres systemctl stop postgresql-11
+    responses:
+      (?i)Password: "{{ ansible_sudo_pass }}"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  ignore_errors: true
+
+# Cleanup Postgresql data directory
+- name: Cleanup Postgres Data directory
+  file:
+    path: /var/lib/pgsql/11/data
+    state: absent
+  become: yes
+  become_user: postgres
+  ignore_errors: true
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  ignore_errors: true
+
+- name: Unmount the gluster volume onto postgresql workdir
+  mount:
+     path: "/var/lib/pgsql/11/"
+     state: unmounted
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true

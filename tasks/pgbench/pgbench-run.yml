@@ -1,0 +1,83 @@
+---
+# Create a directory to store the results
+- name: Create a temporary directory to store results
+  file:
+     state: directory
+     mode: 0777
+     path: "{{ glusterfs_perf_resdir }}/pgbench"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+- name: Mount the gluster volume onto postgresql workdir
+  mount:
+     path: "/var/lib/pgsql/11/"
+     state: mounted
+     fstype: glusterfs
+     src: "{{ glusterfs_perf_server }}:{{ glusterfs_perf_volume}}"
+  when: glusterfs_perf_server is defined
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Changeowner of postgres workdir
+- name: Changeowner of postgres workdir
+  file:
+     path: "/var/lib/pgsql/11/"
+     owner: postgres
+     group: postgres
+     mode: 0777
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Create Postgresql data directory
+- name: Create Postgres Data directory
+  file:
+    path: /var/lib/pgsql/11/data
+    state: directory
+  become: yes
+  become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Postgresql Initdb
+- name: Postgresql Initdb
+  command: /usr/pgsql-11/bin/initdb -D /var/lib/pgsql/11/data/
+  become: yes
+  become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Start service Postgresql
+- name: Start Service Postgresql
+  expect:
+    command: sudo -u postgres systemctl start postgresql-11
+    responses:
+      (?i)Password: "{{ ansible_sudo_pass }}"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Postgresql create db
+- name: Postgresql create db
+  command: createdb {{ glusterfs_perf_pgbench_db_name }}
+  become: yes
+  become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Postgresql run scale db test
+- name: Postgresql run scale db test
+  shell: time /usr/pgsql-11/bin/pgbench -i -s {{ glusterfs_perf_pgbench_db_scale_size }} {{ glusterfs_perf_pgbench_db_name }} > {{ glusterfs_perf_resdir }}/pgbench/scale.results.out 2>&1
+  become: yes
+  become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Postgresql run transaction test
+- name: Postgresql run transaction test
+  shell: /usr/pgsql-11/bin/pgbench  -c {{ glusterfs_perf_pgbench_clnt_cnt }} -j {{ glusterfs_perf_pgbench_thread_cnt }} -t {{ glusterfs_perf_pgbench_txn_cnt }} {{ glusterfs_perf_pgbench_db_name }} > {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out
+  become: yes
+  become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+- name: Cleanup the pgbench setup
+  include_tasks: pgbench-cleanup.yml

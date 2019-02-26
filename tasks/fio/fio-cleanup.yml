@@ -1,0 +1,16 @@
+---
+# Run fio server on the client and open the port from firewall
+- name: Run fio server on clients
+  shell: kill -9 `cat /var/run/fio-svr.pid`
+  delegate_to: "{{ item }}"
+  with_items: "{{ glusterfs_perf_clients }}"
+  run_once: true
+  ignore_errors: true
+
+- name: Clean up GlusterFS mountpoint
+  file:
+     state: absent
+     path: "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}/*"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+  ignore_errors: true

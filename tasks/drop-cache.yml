@@ -1,0 +1,16 @@
+---
+# Drop cache on all clients
+- name: Drop cache on all clients
+  shell: sync; echo 3 > /proc/sys/vm/drop_caches
+  delegate_to: "{{ item }}"
+  with_items: "{{ glusterfs_perf_clients }}"
+  run_once: true
+
+# Drop cache on all servers
+- name: Drop cache on all servers
+  shell: sync; echo 3 > /proc/sys/vm/drop_caches
+  delegate_to: "{{ item }}"
+  with_items: "{{ glusterfs_perf_hosts }}"
+  run_once: true
+
+# TODO: Ideally, the mounts should be unmounted, volume restarted, and then the volume mounted

@@ -32,6 +32,7 @@
       - 5900-6923/tcp
       - 5666/tcp
       - 16514/tcp
+      - 8765/tcp
     gluster_infra_fw_permanent: true
     gluster_infra_fw_state: enabled
     gluster_infra_fw_zone: public

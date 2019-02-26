@@ -11,7 +11,7 @@
   run_once: true
 
 # Run the perf tool on the mountpoint
-- name: Run mkdir/rmdir tests
+- name: Run symlink tests
   command:
   args:
     argv:
@@ -21,11 +21,11 @@
       - --operation
       - "{{ item }}"
       - --threads
-      - 8
+      - "{{ glusterfs_perf_smallfile_threads }}"
       - --file-size
-      - 64
+      - "{{ glusterfs_perf_smallfile_file_size }}"
       - --files
-      - 2500
+      - "{{ glusterfs_perf_smallfile_num_of_files }}"
       - --top
       - "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
       - --host-set
@@ -35,5 +35,5 @@
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
   with_items:
-     - mkdir
-     - rmdir
+     - create
+     - symlink
