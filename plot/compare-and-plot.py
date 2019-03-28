@@ -24,6 +24,7 @@ def read_current_values(rdir, obj, k):
 
 def plot_graph(ref, cur, plot_label, tags):
     # set width of bar
+    global need_compare
     barWidth = 1.0 / (2 + len(tags))
 
     #get nightly dir
@@ -41,30 +42,32 @@ def plot_graph(ref, cur, plot_label, tags):
     plt.bar(r1, [cur[k] for k in plot_label], color='#7f6d5f', width=barWidth, edgecolor='white', label="this")
 
     # graph with yesterday night run.
-    rtag = [x + barWidth for x in r1]
-    r = lambda: random.randint(0,255)
-    plt.bar(rtag, [prev_val[k] for k in plot_label], color='#%02X%02X%02X' % (r(), r(), r()), width=barWidth, edgecolor='white', label="yesterday")
-    print("==== Comparision from Tag: yesterday nightly ====\n")
-    for key in plot_label:
-        cval = cur[key]
-        pval = prev_val[key]
-        print ("%-15s %13f -> %13f %11f%%" % (key, pval, cval, ((cval - pval) / pval) * 100))
-
-    prev_rtag = rtag
-    for t in tags:
-        rtag = [x + barWidth for x in prev_rtag]
-        prev_rtag = rtag
-        vtag = []
-        print("==== Comparision from Tag: %s ====\n" % t)
+    if prev_val['create'] > 1:
+        rtag = [x + barWidth for x in r1]
+        r = lambda: random.randint(0,255)
+        plt.bar(rtag, [prev_val[k] for k in plot_label], color='#%02X%02X%02X' % (r(), r(), r()), width=barWidth, edgecolor='white', label="yesterday")
+        print("==== Comparision from Tag: yesterday night master ====")
         for key in plot_label:
             cval = cur[key]
-            res = ref[t][key]
-            vtag.append(res)
-            print ("%-15s %13f -> %13f %11f%%" % (key, res, cval, ((cval - res) / res) * 100))
+            pval = prev_val[key]
+            print ("%-15s %13f -> %13f %11f%%" % (key, pval, cval, ((cval - pval) / pval) * 100))
 
-        # For different colored graph
-        r = lambda: random.randint(0,255)
-        plt.bar(rtag, vtag, color='#%02X%02X%02X' % (r(), r(), r()), width=barWidth, edgecolor='white', label=t)
+    if need_compare:
+        prev_rtag = rtag
+        for t in tags:
+            rtag = [x + barWidth for x in prev_rtag]
+            prev_rtag = rtag
+            vtag = []
+            print("==== Comparision from Tag: %s ====\n" % t)
+            for key in plot_label:
+                cval = cur[key]
+                res = ref[t][key]
+                vtag.append(res)
+                print ("%-15s %13f -> %13f %11f%%" % (key, res, cval, ((cval - res) / res) * 100))
+
+            # For different colored graph
+            r = lambda: random.randint(0,255)
+            plt.bar(rtag, vtag, color='#%02X%02X%02X' % (r(), r(), r()), width=barWidth, edgecolor='white', label=t)
 
     # Add xticks on the middle of the group bars
     plt.xlabel('type of tests', fontweight='bold')
@@ -110,15 +113,16 @@ def parse_args(prog, argv):
     global current_tag
     global result_dir
     global csv_file
+    global need_compare
 
     try:
-        opts, args = getopt.getopt(argv, "hr:t:c:", ["help", "result-dir=","tag=", "csv-file="])
+        opts, args = getopt.getopt(argv, "hnr:t:c:", ["help", "result-dir=","tag=", "csv-file="])
     except getopt.GetoptError:
-        print('%s --result-dir DIR [--tag TAG] [--csv-file FILE]' % prog)
+        print('%s --result-dir DIR [--tag TAG] [--csv-file FILE][-n]' % prog)
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('%s --result-dir DIR [--tag TAG] [--csv-file FILE]' % prog)
+            print('%s --result-dir DIR [--tag TAG] [--csv-file FILE][-n]' % prog)
             sys.exit(2)
         elif opt == '-r' or opt == '--result-dir':
             result_dir = arg
@@ -126,6 +130,8 @@ def parse_args(prog, argv):
             current_tag = arg
         elif opt == '-c' or opt == '--csv-file':
             csv_file = arg
+        elif opt == '-n':
+            need_compare = True
 
     if result_dir == "":
         result_dir = '/var/tmp/glusterperf/' + current_tag
@@ -151,6 +157,7 @@ current_tag = ""
 result_dir = ""
 csv_file = "data/results.csv"
 ref_value = {}
+need_compare = False
 
 if __name__ == "__main__":
    main(sys.argv)
