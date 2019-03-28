@@ -65,6 +65,17 @@
     dest: "{{ smallfile_perf_git_dest | default('/usr/src/smallfile') }}"
     repo: https://github.com/distributed-system-analysis/smallfile.git
 
+- name: Clone the glusterfs.perf role
+  git:
+    clone: yes
+    update: yes
+    dest: /etc/ansible/roles/glusterfs.perf
+    repo: https://github.com/gluster/glusterfs-perf.git
+  ignore_errors: true
+  delegate_to: "{{ item }}"
+  with_items: "{{ glusterfs_perf_clients }}"
+  run_once: true
+
 # Run autogen and configure to generate makefile
 - name: Generate configure file
   command: ./autogen.sh
