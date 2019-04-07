@@ -26,11 +26,29 @@
   tags:
     - clustersetup
 
-# Run the performance tool on the cluster
+# Run the smallfile performance tool on the cluster
 - name: Run smallfile perf tool
-  import_tasks: perftests.yml
+  import_tasks: smallfile/smallfile-perf.yml
   tags:
     - runperf
+
+# Run the fio performance tool on the cluster
+- name: Run fio tests
+  import_tasks: fio/fio-perf.yml
+  tags:
+    - runperf, fio
+
+# Run the pgbench performance tool on the cluster
+- name: Run pgbench tests
+  import_tasks: pgbench/pgbench-run.yml
+  tags:
+    - runperf, pgbench
+
+# Run the untar and rm -rf test
+- name: Run untar and rm -rf test
+  import_tasks: untar/untar-run.yml
+  tags:
+    - runperf, untar
 
 # Send mail attaching the results
 - name: Send mail attaching the results

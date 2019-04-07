@@ -1,0 +1,35 @@
+---
+# Create a directory to store the results
+- name: Create a temporary directory to store results
+  file:
+     state: directory
+     path: "{{glusterfs_perf_resdir }}/fio"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Create a host.list to be used by fio
+- name: Create a host.list to be used by fio
+  copy:
+     content: "{{ glusterfs_perf_clients|join('\n') }}"
+     dest: "{{ glusterfs_perf_resdir }}/fio/host.list"
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Run fio server on the client and open the port from firewall
+- name: Run fio server on clients and open necessary port
+  command: fio --server --daemonize=/var/run/fio-svr.pid
+  delegate_to: "{{ item }}"
+  with_items: "{{ glusterfs_perf_clients }}"
+  run_once: true
+
+# Run fio tests
+- name: Run fio tests
+  include_tasks: fio-run.yml
+  loop: "{{ glusterfs_perf_fiotests|flatten(levels=1) }}"
+  loop_control:
+    loop_var: fiojob
+    index_var: idx
+
+# Cleanup after fio
+- name: Cleanup after fio
+  include_tasks: fio-cleanup.yml

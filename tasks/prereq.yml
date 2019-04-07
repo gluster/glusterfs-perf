@@ -36,16 +36,32 @@
        - sqlite-devel
        - systemd
        - userspace-rcu-devel
+       - zlib-devel
+       - libaio
+       - fio
+       - postgresql11
+       - postgresql11-contrib
+       - postgresql11-server
 
 - name: Add EPEL repository (we need it for a few extra packages)
   yum:
-    name: 'http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
+    name: "{{ item }}"
     state: present
+  with_items:
+    - http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    - https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
 
 - name: Install the necessary packages
   yum:
     name: "{{ packages }}"
     state: present
+
+- name: Install pip
+  command: "{{ item }}"
+  with_items:
+    - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    - python get-pip.py
+    - pip install pexpect
 
 - name: Clone glusterfs git repository
   git:
@@ -100,7 +116,7 @@
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
     target: install
 
-# Can't do make install in a single command witht his module
+# Can't do make install in a single command with this module
 - name: Clean build directory
   make:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"

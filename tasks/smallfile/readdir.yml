@@ -11,7 +11,7 @@
   run_once: true
 
 # Run the perf tool on the mountpoint
-- name: Run rename tests
+- name: Run readdir tests
   command:
   args:
     argv:
@@ -21,11 +21,11 @@
       - --operation
       - "{{ item }}"
       - --threads
-      - 8
+      - "{{ glusterfs_perf_smallfile_threads }}"
       - --file-size
-      - 64
+      - "{{ glusterfs_perf_smallfile_file_size }}"
       - --files
-      - 2500
+      - "{{ glusterfs_perf_smallfile_num_of_files }}"
       - --top
       - "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
       - --host-set
@@ -36,5 +36,4 @@
   run_once: true
   with_items:
      - create
-     - rename
-     - delete-renamed
+     - readdir
