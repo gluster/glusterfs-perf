@@ -32,23 +32,25 @@
   tags:
     - runperf
 
-# Run the fio performance tool on the cluster
-- name: Run fio tests
-  import_tasks: fio/fio-perf.yml
-  tags:
-    - runperf, fio
+# These tests are failing to execute due to some setup issues.
+# Please check and uncomment once fixed and tested.
+# # Run the fio performance tool on the cluster
+# - name: Run fio tests
+#   import_tasks: fio/fio-perf.yml
+#   tags:
+#     - runperf, fio
 
-# Run the pgbench performance tool on the cluster
-- name: Run pgbench tests
-  import_tasks: pgbench/pgbench-run.yml
-  tags:
-    - runperf, pgbench
+# # Run the pgbench performance tool on the cluster
+# - name: Run pgbench tests
+#   import_tasks: pgbench/pgbench-run.yml
+#   tags:
+#     - runperf, pgbench
 
-# Run the untar and rm -rf test
-- name: Run untar and rm -rf test
-  import_tasks: untar/untar-run.yml
-  tags:
-    - runperf, untar
+# # Run the untar and rm -rf test
+# - name: Run untar and rm -rf test
+#   import_tasks: untar/untar-run.yml
+#   tags:
+#     - runperf, untar
 
 # Send mail attaching the results
 - name: Send mail attaching the results

@@ -1,0 +1,115 @@
+---
+- name: Setup a GlusterFS cluster from source tree
+  remote_user: root
+  gather_facts: true
+  hosts: all
+  vars:
+    gluster_infra_disktype: RAID6
+    gluster_infra_diskcount: 12
+    gluster_infra_stripe_unit_size: 128
+    gluster_infra_volume_groups:
+      - vgname: vg_sdb
+        pvname: /dev/sdb
+    gluster_infra_thinpools:
+      - vgname: vg_sdb
+        thinpoolname: thinpool_vg_sdb
+        thinpoolsize: 45G
+        poolmetadatasize: 1G
+    gluster_infra_lv_logicalvols:
+      - vgname: vg_sdb
+        thinpool: thinpool_vg_sdb
+        lvname: gluster_lv_disk1
+        lvsize: 200G
+    # Mount the devices
+    gluster_infra_mount_devices:
+      - { path: '/gluster_bricks', vgname: vg_sdb, lvname: gluster_lv_disk1 }
+    gluster_infra_fw_ports:
+      - 2049/tcp
+      - 24007-24050/tcp
+      - 49100-49500/tcp
+      - 54321/tcp
+      - 5900/tcp
+      - 5900-6923/tcp
+      - 5666/tcp
+      - 16514/tcp
+    gluster_infra_fw_permanent: true
+    gluster_infra_fw_state: enabled
+    gluster_infra_fw_zone: public
+
+    # Point to the git repo you want to clone from (and also the version/tag)
+    #
+    # glusterfs_perf_git_repo: https://review.gluster.org/glusterfs
+    # glusterfs_perf_git_version: release-6
+
+    # check which refspec you need to fetch. If you want to test particular
+    # patch, you would need to set it up. Remember to uncomment above variable
+    # too, if you want to use this. (Visible when you press 'Download'
+    # in https://review.gluster.org, particular patch.
+    #
+    # glusterfs_perf_git_refspec: refs/changes/36/20636/21
+
+    #glusterfs_perf_resdir: /var/tmp/glusterperf/{{ansible_date_time.date}}-{{ glusterfs_perf_git_version | default('master') }}
+    glusterfs_perf_resdir: "{{ lookup('pipe','date +%Y-%m-%d-%H-%M-%S') }}"
+    glusterfs_perf_volume: perfvol
+    glusterfs_perf_bricks: /gluster_bricks/perfbrick
+    glusterfs_perf_hosts: "{{ groups['servers'] }}"
+    glusterfs_perf_replica_count: 3
+    glusterfs_perf_server: "{{ groups['servers'][0] }}"
+    glusterfs_perf_clients: "{{ groups['clients'] }}"
+    glusterfs_perf_client: "{{ groups['clients'][0] }}"
+    glusterfs_perf_to_list:
+      - sac@redhat.com
+      - atumball@redhat.com
+
+
+  pre_tasks:
+     # Clean up the test bed before starting a new run
+     # We ignore the error, there might be a possibility that the client might not be
+     # present
+     - name: umount the client (if mounted, else ignore error)
+       mount:
+          state: absent
+          path: "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
+       ignore_errors: true
+       delegate_to: "{{ item | default(glusterfs_perf_server) }}"
+       run_once: true
+       with_items: "{{ glusterfs_perf_clients }}"
+
+     - name: Stop and delete the GlusterFS volume (if present, else ignore error)
+       gluster_volume:
+          state: absent
+          volume: "{{ glusterfs_perf_volume }}"
+          force: yes
+       run_once: true
+       delegate_to: "{{ glusterfs_perf_server }}"
+       ignore_errors: true
+
+     - name: Stop the glusterd daemon (kill it)
+       command: pkill -9 glusterd
+       ignore_errors: true
+
+     - name: Clean up /var/lib/glusterd
+       file:
+           state: absent
+           path: /var/lib/glusterd
+       ignore_errors: true
+
+     # Remove unmount and delete the volume groups
+     - name: umount the GlusterFS bricks (if mounted, else ignore errors)
+       mount:
+           state: absent
+           path: "{{ item.path }}"
+       with_items: "{{ gluster_infra_mount_devices }}"
+       ignore_errors: true
+
+     - name: Delete volume groups (if present)
+       lvg:
+           state: absent
+           vg: "{{ item.vgname }}"
+           force: yes
+       ignore_errors: true
+       with_items: "{{ gluster_infra_mount_devices }}"
+
+  roles:
+    - gluster.infra
+    - glusterfs.perf
