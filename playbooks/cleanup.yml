@@ -50,3 +50,13 @@
            force: yes
        ignore_errors: true
        with_items: "{{ gluster_infra_mount_devices }}"
+
+     - name: Checkout to Master
+       command: git checkout master
+       args:
+         chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+
+     - name: Delete Branch
+       shell: for br in $(git branch | grep test); do git branch -D $br; done
+       args:
+         chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"

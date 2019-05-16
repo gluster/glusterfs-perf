@@ -1,2 +1,4 @@
 ---
 # vars file for glusterfs-perf
+
+glusterfs_perf_tag: nightly

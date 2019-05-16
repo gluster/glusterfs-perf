@@ -63,15 +63,21 @@
     - python get-pip.py
     - pip install pexpect
 
-- name: Clone glusterfs git repository
+- name: Git checkout
   git:
-    clone: yes
     depth: 1
+    clone: yes
     update: yes
-    dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
     repo: "{{ glusterfs_perf_git_repo | default('https://github.com/gluster/glusterfs.git') }}"
+    dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+    #refspec: refs/changes/{{ (patch | string)[-2:] }}/{{ patch }}/{{ patchset }}
     version: "{{ glusterfs_perf_git_version | default('master') }}"
     refspec: "{{ glusterfs_perf_git_refspec | default(omit) }}"
+
+- name: Fetch HEAD
+  command: git checkout -b test-{{ ansible_date_time.epoch }} FETCH_HEAD
+  args:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
 
 - name: Clone smallfile perf git repository
   git:
