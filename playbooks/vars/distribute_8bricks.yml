@@ -89,6 +89,3 @@ gluster_nodes:
             - benki5-nic2.lab.eng.blr.redhat.com
             - benki6-nic2.lab.eng.blr.redhat.com
         glusterfs_perf_client: 'benki5-nic2.lab.eng.blr.redhat.com'
-        glusterfs_perf_to_list:
-            - sac@redhat.com
-            - atumball@redhat.com

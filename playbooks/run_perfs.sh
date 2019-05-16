@@ -22,3 +22,8 @@ for var in *.yml; do
     # cleanup after the tests are run
     ansible-playbook -i $var ../cleanup.yml
 done
+
+# Send email
+cd ../
+
+ansible-playbook -i ./email-vars.yml ./sendmail-playbook.yml

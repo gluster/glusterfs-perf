@@ -1,0 +1,11 @@
+# Send mail attaching the results
+- name: Send mail attaching the results
+  remote_user: root
+  gather_facts: true
+  hosts: all
+  tasks:
+    - name: Send mail attaching the results
+      import_tasks: sendmail.yml
+      when: glusterfs_perf_to_list is defined
+      tags:
+        - mail
