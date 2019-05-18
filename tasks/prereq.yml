@@ -78,6 +78,7 @@
   command: git checkout -b test-{{ ansible_date_time.epoch }} FETCH_HEAD
   args:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+  when: glusterfs_perf_git_refspec is defined
 
 - name: Clone smallfile perf git repository
   git:
