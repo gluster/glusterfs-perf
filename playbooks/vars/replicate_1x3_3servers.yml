@@ -47,8 +47,8 @@ gluster_nodes:
         #
         # glusterfs_perf_git_refspec: refs/changes/36/20636/21
 
-        glusterfs_perf_resdir_base: /var/tmp/glusterperf/{{ansible_date_time.date}}/
-        glusterfs_perf_resdir: {{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/replicate/
+        glusterfs_perf_resdir_base: "/var/tmp/glusterperf/{{ ansible_date_time.date }}"
+        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/replicate/"
         glusterfs_perf_volume: replicate
         glusterfs_perf_bricks: /replicate/brick
         glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
