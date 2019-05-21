@@ -1,0 +1,20 @@
+gluster_nodes:
+    hosts:
+        benki1-nic2.lab.eng.blr.redhat.com:
+        benki2-nic2.lab.eng.blr.redhat.com:
+        benki3-nic2.lab.eng.blr.redhat.com:
+
+    vars:
+        glusterfs_perf_to_list:
+            - sac@redhat.com
+            - atumball@redhat.com
+            # Add your email address here
+        glusterfs_perf_resdir_base: "/var/tmp/glusterperf/{{ansible_date_time.date}}/"
+        glusterfs_perf_clients:
+            - benki5-nic2.lab.eng.blr.redhat.com
+            - benki6-nic2.lab.eng.blr.redhat.com
+        glusterfs_perf_client: benki5-nic2.lab.eng.blr.redhat.com
+        glusterfs_perf_ofile: "/tmp/perf-results-{{ ansible_date_time.date }}.txt"
+
+        # Tag : ideally, have different tag for each run.
+        glusterfs_perf_tag: nightly

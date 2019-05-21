@@ -51,10 +51,3 @@
 #   import_tasks: untar/untar-run.yml
 #   tags:
 #     - runperf, untar
-
-# Send mail attaching the results
-- name: Send mail attaching the results
-  import_tasks: sendmail.yml
-  when: glusterfs_perf_to_list is defined
-  tags:
-    - mail
