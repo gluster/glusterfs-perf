@@ -13,8 +13,10 @@
 - name: Create a comma-separated list of clients
   set_fact:
         gluster_clients: "{{ glusterfs_perf_clients|join(',') }}"
+  when: glusterfs_perf_clients is defined
 
 # tasks file for glusterfs-perf
+# This runs on both clients and servers
 - name: Pre-requisites for setting up Gluster HCI
   import_tasks: prereq.yml
   tags:
@@ -23,12 +25,14 @@
 # Setup GlusterFS cluster
 - name: Setup GlusterFS cluster
   import_tasks: glustervol.yml
+  when: glusterfs_perf_volume is defined
   tags:
     - clustersetup
 
 # Run the smallfile performance tool on the cluster
 - name: Run smallfile perf tool
   import_tasks: smallfile/smallfile-perf.yml
+  when: glusterfs_perf_resdir is defined
   tags:
     - runperf
 

@@ -1,3 +1,8 @@
+gluster_clients:
+    hosts:
+        benki5-nic2.lab.eng.blr.redhat.com:
+        benki6-nic2.lab.eng.blr.redhat.com:
+
 gluster_nodes:
     hosts:
         benki1-nic2.lab.eng.blr.redhat.com:
@@ -85,7 +90,5 @@ gluster_nodes:
         glusterfs_perf_bricks: /dist1/1,/dist2/1,/dist3/1,/dist4/1
         glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
         glusterfs_perf_server: "{{ groups['gluster_nodes'][0] }}"
-        glusterfs_perf_clients:
-            - benki5-nic2.lab.eng.blr.redhat.com
-            - benki6-nic2.lab.eng.blr.redhat.com
-        glusterfs_perf_client: 'benki5-nic2.lab.eng.blr.redhat.com'
+        glusterfs_perf_clients: "{{ groups['gluster_clients'] }}"
+        glusterfs_perf_client: "{{  groups['gluster_clients'][0] }}"
