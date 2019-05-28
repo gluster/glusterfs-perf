@@ -97,6 +97,7 @@
   ignore_errors: true
   delegate_to: "{{ item }}"
   with_items: "{{ glusterfs_perf_clients }}"
+  when: glusterfs_perf_clients is defined
   run_once: true
 
 # Run autogen and configure to generate makefile

@@ -4,6 +4,9 @@
   gather_facts: false
   hosts: all
   include_vars: common_vars.yml
+  tasks:
+    - name: include common variables
+      include_vars: common-vars.yml
   roles:
     - gluster.infra
     - glusterfs.perf
