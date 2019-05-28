@@ -3,10 +3,14 @@
   remote_user: root
   gather_facts: false
   hosts: all
+  ignore_erros: true
   tasks:
      # Clean up the test bed before starting a new run
      # We ignore the error, there might be a possibility that the client might not be
      # present
+     - name: include common variables
+       include_vars: common-vars.yml
+
      - name: umount the client (if mounted, else ignore error)
        mount:
           state: absent
