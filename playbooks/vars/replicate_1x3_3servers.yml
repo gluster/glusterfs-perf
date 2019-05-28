@@ -2,6 +2,10 @@ gluster_clients:
     hosts:
         benki5-nic2.lab.eng.blr.redhat.com:
         benki6-nic2.lab.eng.blr.redhat.com:
+    vars:
+        glusterfs_perf_server: "{{ groups['gluster_nodes'][0] }}"
+        glusterfs_perf_clients: "{{ groups['gluster_clients'] }}"
+        glusterfs_perf_client: "{{  groups['gluster_clients'][0] }}"
 
 gluster_nodes:
     hosts:
