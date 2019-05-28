@@ -3,6 +3,7 @@
   remote_user: root
   gather_facts: false
   hosts: all
+  include_vars: common_vars.yml
   roles:
     - gluster.infra
     - glusterfs.perf

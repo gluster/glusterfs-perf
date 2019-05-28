@@ -3,9 +3,8 @@ gluster_clients:
         benki5-nic2.lab.eng.blr.redhat.com:
         benki6-nic2.lab.eng.blr.redhat.com:
     vars:
-        glusterfs_perf_server: "{{ groups['gluster_nodes'][0] }}"
-        glusterfs_perf_clients: "{{ groups['gluster_clients'] }}"
-        glusterfs_perf_client: "{{  groups['gluster_clients'][0] }}"
+        glusterfs_perf_volume: disperse
+        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/disperse/"
 
 gluster_nodes:
     hosts:
@@ -42,39 +41,11 @@ gluster_nodes:
         gluster_infra_mount_devices:
             - { path: '/disperse1', vgname: vg_sdb, lvname: gluster_lv_disk1 }
             - { path: '/disperse2', vgname: vg_sdc, lvname: gluster_lv_disk2 }
-        gluster_infra_fw_ports:
-            - 2049/tcp
-            - 24007-24050/tcp
-            - 49100-49500/tcp
-            - 54321/tcp
-            - 5900/tcp
-            - 5900-6923/tcp
-            - 5666/tcp
-            - 16514/tcp
-        gluster_infra_fw_permanent: true
-        gluster_infra_fw_state: enabled
-        gluster_infra_fw_zone: public
 
-        # Point to the git repo you want to clone from (and also the version/tag)
-        #
-        # glusterfs_perf_git_repo: https://review.gluster.org/glusterfs
-        # glusterfs_perf_git_version: release-6
-
-        # check which refspec you need to fetch. If you want to test particular
-        # patch, you would need to set it up. Remember to uncomment above variable
-        # too, if you want to use this. (Visible when you press 'Download'
-        # in https://review.gluster.org, particular patch.
-        #
-        # glusterfs_perf_git_refspec: refs/changes/36/20636/21
-
-        glusterfs_perf_resdir_base: "/var/tmp/glusterperf/{{ ansible_date_time.date }}"
-        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/distribute/"
+        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/disperse/"
         glusterfs_perf_volume: disperse
         glusterfs_perf_bricks: /disperse1/brick,/disperse2/brick
         glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
         glusterfs_perf_disperse_count: 6
         glusterfs_perf_redundancy_count: 2
         glusterfs_perf_force: true
-        glusterfs_perf_server: "{{ groups['gluster_nodes'][0] }}"
-        glusterfs_perf_clients: "{{ groups['gluster_clients'] }}"
-        glusterfs_perf_client: "{{  groups['gluster_clients'][0] }}"

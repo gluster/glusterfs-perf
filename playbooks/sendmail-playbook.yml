@@ -3,6 +3,7 @@
   remote_user: root
   gather_facts: true
   hosts: all
+  include_vars: common_vars.yml
   tasks:
     - name: Send mail attaching the results
       import_tasks: sendmail.yml
