@@ -3,7 +3,7 @@
   remote_user: root
   gather_facts: false
   hosts: all
-  ignore_erros: true
+  ignore_errors: true
   tasks:
      # Clean up the test bed before starting a new run
      # We ignore the error, there might be a possibility that the client might not be

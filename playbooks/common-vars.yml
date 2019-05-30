@@ -1,14 +1,5 @@
 ---
 
-# These are also included in defaults
-glusterfs_perf_resdir_base: "/var/tmp/glusterperf/{{ ansible_date_time.date }}"
-glusterfs_perf_ofile: /tmp/perf-results-{{ansible_date_time.date}}.txt
-
-glusterfs_perf_server: "{{ groups['gluster_nodes'][0] }}"
-glusterfs_perf_clients: "{{ groups['gluster_clients'] }}"
-glusterfs_perf_client: "{{  groups['gluster_clients'][0] }}"
-glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
-
 # Point to the git repo you want to clone from (and also the version/tag)
 #
 # glusterfs_perf_git_repo: https://review.gluster.org/glusterfs

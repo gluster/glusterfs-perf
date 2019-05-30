@@ -11,7 +11,7 @@
   run_once: true
 
 # Run the perf tool on the mountpoint
-- name: Run setxattr/getxattr tests
+- name: Run create tests
   command:
   args:
     argv:
@@ -36,5 +36,3 @@
   run_once: true
   with_items:
      - create
-     - setxattr
-     - getxattr

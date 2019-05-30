@@ -16,10 +16,11 @@
 
 # Prepare the job.ini file for fio
 - name: Prepare job.ini for FIO run
-  shell: echo -e "{{ fiojob }}" > {{ glusterfs_perf_resdir }}/fio/{{ idx }}.job.ini
+  shell: file=`echo -e "{{ fiojob }}" | head -n 1 | tr -d " []"` ; echo -e "{{ fiojob }}" > "{{ glusterfs_perf_resdir }}/fio/$file.job.ini" ; echo "$file"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
   when: (fiojob != "DROP_CACHE") and (fiojob != "CLEANUP_MNT")
+  register: file_name
 
 - name: Debug Info
   debug: msg="Running fio job {{ fiojob }}"
@@ -27,7 +28,7 @@
 
 # Run the FIO job
 - name: Run FIO job
-  shell: fio {{ glusterfs_perf_resdir }}/fio/{{ idx }}.job.ini --output-format=json --client={{ glusterfs_perf_resdir }}/fio/host.list > {{ glusterfs_perf_resdir }}/fio/{{ idx }}.results.out
+  shell: "fio {{ glusterfs_perf_resdir }}/fio/{{ file_name.stdout }}.job.ini --output-format=json --client={{ glusterfs_perf_resdir }}/fio/host.list > {{ glusterfs_perf_resdir }}/fio/{{ file_name.stdout }}.json"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
   when: (fiojob != "DROP_CACHE") and (fiojob != "CLEANUP_MNT")

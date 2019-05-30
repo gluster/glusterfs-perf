@@ -14,7 +14,7 @@ def read_current_values(rdir, obj, k):
                 obj[d] = {}
 
             try:
-                with open("%s/%s/%s" % (rdir, d, k)) as f:
+                with open("%s/%s/smallfile/%s" % (rdir, d, k)) as f:
                     data = json.load(f)
                 obj[d][k] = data['results']['files-per-sec']
             except:

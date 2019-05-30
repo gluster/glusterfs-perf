@@ -1,16 +1,10 @@
-gluster_clients:
-    hosts:
-        benki5-nic2.lab.eng.blr.redhat.com:
-        benki6-nic2.lab.eng.blr.redhat.com:
-    vars:
-        glusterfs_perf_volume: disperse
-        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/disperse/"
-
 gluster_nodes:
     hosts:
         benki1-nic2.lab.eng.blr.redhat.com:
         benki2-nic2.lab.eng.blr.redhat.com:
         benki3-nic2.lab.eng.blr.redhat.com:
+        benki5-nic2.lab.eng.blr.redhat.com:
+        benki6-nic2.lab.eng.blr.redhat.com:
     vars:
         gluster_infra_disktype: RAID6
         gluster_infra_diskcount: 12
@@ -42,10 +36,23 @@ gluster_nodes:
             - { path: '/disperse1', vgname: vg_sdb, lvname: gluster_lv_disk1 }
             - { path: '/disperse2', vgname: vg_sdc, lvname: gluster_lv_disk2 }
 
-        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/disperse/"
         glusterfs_perf_volume: disperse
         glusterfs_perf_bricks: /disperse1/brick,/disperse2/brick
-        glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
         glusterfs_perf_disperse_count: 6
         glusterfs_perf_redundancy_count: 2
         glusterfs_perf_force: true
+
+        glusterfs_perf_servers:
+            - benki1-nic2.lab.eng.blr.redhat.com
+            - benki2-nic2.lab.eng.blr.redhat.com
+            - benki3-nic2.lab.eng.blr.redhat.com
+        glusterfs_perf_clients:
+            - benki5-nic2.lab.eng.blr.redhat.com
+            - benki6-nic2.lab.eng.blr.redhat.com
+        glusterfs_perf_server: benki1-nic2.lab.eng.blr.redhat.com
+        glusterfs_perf_client: benki5-nic2.lab.eng.blr.redhat.com
+        glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
+
+        glusterfs_perf_tag: nightly
+        glusterfs_perf_resdir_base: "/var/tmp/glusterperf/{{ ansible_date_time.date }}"
+        glusterfs_perf_resdir: "{{ glusterfs_perf_resdir_base }}/{{ glusterfs_perf_tag }}/disperse/"

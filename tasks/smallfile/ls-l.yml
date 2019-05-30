@@ -31,7 +31,7 @@
       - --host-set
       - "{{ gluster_clients }}"
       - --output-json
-      - "{{glusterfs_perf_resdir}}/{{item}}"
+      - "{{glusterfs_perf_resdir}}/smallfile/{{item}}"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
   with_items:

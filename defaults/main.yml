@@ -1,26 +1,20 @@
 ---
-#default client and servers
-glusterfs_perf_clients: "{{ groups['gluster_clients'] }}"
-glusterfs_perf_server: "{{ groups['gluster_nodes'][0] }}"
-glusterfs_perf_client: "{{  groups['gluster_clients'][0] }}"
-glusterfs_perf_hosts: "{{ groups['gluster_nodes'] }}"
-
 # defaults file for glusterfs-perf
 glusterfs_perf_mountpoint: /mnt/glusterfs
-glusterfs_perf_resdir_base: "/var/tmp/glusterperf/{{ ansible_date_time.date }}"
+glusterfs_perf_resdir_base: /var/tmp/glusterperf/{{ ansible_data_time.date }}
 glusterfs_perf_ofile: /tmp/perf-results-{{ansible_date_time.date}}.txt
 
 # Defauls for smallfile tests
-glusterfs_perf_smallfile_threads: 1
+glusterfs_perf_smallfile_threads: 4
 glusterfs_perf_smallfile_file_size: 64
-glusterfs_perf_smallfile_num_of_files: 10
+glusterfs_perf_smallfile_num_of_files: 100000
 
 # Defaults for pgbench tests
-glusterfs_perf_pgbench_db_scale_size: 10
+glusterfs_perf_pgbench_db_scale_size: 100
 glusterfs_perf_pgbench_db_name: glusterpgsql
-glusterfs_perf_pgbench_clnt_cnt: 1
-glusterfs_perf_pgbench_thread_cnt: 1
-glusterfs_perf_pgbench_txn_cnt: 5
+glusterfs_perf_pgbench_clnt_cnt: 10
+glusterfs_perf_pgbench_thread_cnt: 2
+glusterfs_perf_pgbench_txn_cnt: 1000
 
 # firewall rules
 gluster_infra_fw_ports:
@@ -48,9 +42,9 @@ glusterfs_perf_fiotests:
                     bs=128k
                     directory={{ glusterfs_perf_mountpoint }}
                     filename_format=f.\$jobnum.\$filenum
-                    filesize=10m
-                    size=10m
-                    numjobs=1
+                    filesize=16g
+                    size=16g
+                    numjobs=4
      - DROP_CACHE
      - |
                 [SeqRead]
@@ -60,9 +54,9 @@ glusterfs_perf_fiotests:
                     bs=128k
                     directory={{ glusterfs_perf_mountpoint }}
                     filename_format=f.\$jobnum.\$filenum
-                    filesize=10m
-                    size=10m
-                    numjobs=1
+                    filesize=20g
+                    size=20g
+                    numjobs=4
      - CLEANUP_MNT
      - DROP_CACHE
      - |
@@ -75,9 +69,9 @@ glusterfs_perf_fiotests:
                     bs=128k
                     directory={{ glusterfs_perf_mountpoint }}
                     filename_format=f.\$jobnum.\$filenum
-                    filesize=10m
-                    size=10m
-                    numjobs=1
+                    filesize=20g
+                    size=20g
+                    numjobs=4
      - |
                 [RandomRead]
                     ioengine=libaio
@@ -87,10 +81,10 @@ glusterfs_perf_fiotests:
                     bs=4k
                     directory={{ glusterfs_perf_mountpoint }}
                     filename_format=f.\$jobnum.\$filenum
-                    size=10m
+                    size=20g
                     time_based=1
-                    runtime=1
-                    numjobs=1
+                    runtime=10
+                    numjobs=4
 
      - |
                 [RandomWrite]
@@ -102,7 +96,7 @@ glusterfs_perf_fiotests:
                     bs=4k
                     directory={{ glusterfs_perf_mountpoint }}
                     filename_format=f.\$jobnum.\$filenum
-                    size=10m
+                    size=20g
                     time_based=1
-                    runtime=1
-                    numjobs=1
+                    runtime=10
+                    numjobs=4

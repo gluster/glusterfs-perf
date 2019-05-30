@@ -65,17 +65,39 @@
 
 # Postgresql run scale db test
 - name: Postgresql run scale db test
-  shell: time /usr/pgsql-11/bin/pgbench -i -s {{ glusterfs_perf_pgbench_db_scale_size }} {{ glusterfs_perf_pgbench_db_name }} > {{ glusterfs_perf_resdir }}/pgbench/scale.results.out 2>&1
+  shell: time /usr/pgsql-11/bin/pgbench -i -s {{ glusterfs_perf_pgbench_db_scale_size }} {{ glusterfs_perf_pgbench_db_name }} &> {{ glusterfs_perf_resdir }}/pgbench/scale.results.out
   become: yes
   become_user: postgres
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
+  register: pgbench_scale_output
 
 # Postgresql run transaction test
 - name: Postgresql run transaction test
   shell: /usr/pgsql-11/bin/pgbench  -c {{ glusterfs_perf_pgbench_clnt_cnt }} -j {{ glusterfs_perf_pgbench_thread_cnt }} -t {{ glusterfs_perf_pgbench_txn_cnt }} {{ glusterfs_perf_pgbench_db_name }} > {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out
   become: yes
   become_user: postgres
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Format the scale results into json format
+- name: Format scale.results.out into json format
+  #shell: json='{"time": "{{ pgbench_scale_output.delta }}"} ; echo $json > {{ glusterfs_perf_resdir }}/pgbench/scale.json
+  shell: echo '{"time"{{ ":" }}{{ pgbench_scale_output.delta }}}' > {{ glusterfs_perf_resdir }}/pgbench/scale.json
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+# Format the transaction results into json format
+- name: Format transactions.results.out into json format
+  shell: |
+    tps_inc=`grep "including connections establishing" {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out`
+    tps_inc=${tps_inc//[!0-9,.]/}
+    sed -i "/including connections establishing/c\tps \(including connections establishing\) = $tps_inc" {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out
+    tps_inc=`grep "excluding connections establishing" {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out`
+    tps_inc=${tps_inc//[!0-9,.]/}
+    sed -i "/excluding connections establishing/c\tps \(excluding connections establishing\) = $tps_inc" {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out
+    awk  -F"{{ ":" }} | = " 'BEGIN{print "{"} {print "  \""$1"\""" {{ ":" }} \""$2"\""} END{print "}"}' {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out > {{ glusterfs_perf_resdir }}/pgbench/transactions.json
+    #awk -F": | = " 'BEGIN{print "{"} {print "  \""$1"\""" : \""$2"\""} END{print "}"}' {{ glusterfs_perf_resdir }}/pgbench/transactions.results.out > {{ glusterfs_perf_resdir }}/pgbench/transactions.json
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
 

@@ -2,19 +2,12 @@
 # grep and build results
 - name: Collect results in a file
   shell: |
-     #grep 'files-per-sec' {{ glusterfs_perf_resdir }}/* > {{ glusterfs_perf_ofile }}
      # TODO: handle the long arguments
      python /etc/ansible/roles/glusterfs.perf/plot/compare-nightly.py -r {{ glusterfs_perf_resdir_base }} -t {{ glusterfs_perf_tag }} > {{ glusterfs_perf_ofile }}
      echo {{ glusterfs_perf_git_version|default('') }} {{ glusterfs_perf_git_refspec|default('') }} >> {{ glusterfs_perf_ofile }}
      exit 0
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
-
-# - name: List of png to mail
-#   shell: ls {{ glusterfs_perf_resdir }}/*.png
-#   register: png_list
-#   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
-#   run_once: true
 
 - name: Read the contents of the output file
   slurp:
@@ -30,7 +23,6 @@
      body: "{{ msgbody['content'] | b64decode }}"
      from: "{{ glusterfs_perf_mail_sender | default('sac@redhat.com') }}"
      to: "{{ glusterfs_perf_to_list | default('atumball@redhat.com') }}"
-  #   attach: "{{ png_list.stdout_lines }} + [ '{{ glusterfs_perf_ofile }}']"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
 

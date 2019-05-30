@@ -3,13 +3,16 @@
 - name: Create a temporary directory to store results
   file:
      state: directory
-     path: "{{glusterfs_perf_resdir }}"
+     path: "{{ glusterfs_perf_resdir }}/smallfile/"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
 
 # Import the tests
-- import_tasks: createdelete.yml
-  tags: createdelete
+- import_tasks: create.yml
+  tags: create
+
+- import_tasks: delete.yml
+  tags: delete
 
 - import_tasks: appendoverwrite.yml
   tags: appendoverwrite

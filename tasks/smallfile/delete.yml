@@ -1,17 +1,6 @@
 ---
-- name: Clean up GlusterFS mountpoint
-  file:
-     state: absent
-     path: "{{glusterfs_perf_mountpoint|default('/mnt/glusterfs')}}/{{item}}"
-  with_items:
-     - file_dstdir
-     - file_srcdir
-     - network_shared
-  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
-  run_once: true
-
 # Run the perf tool on the mountpoint
-- name: Run setxattr/getxattr tests
+- name: Run delete tests
   command:
   args:
     argv:
@@ -35,6 +24,4 @@
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
   with_items:
-     - create
-     - setxattr
-     - getxattr
+     - delete

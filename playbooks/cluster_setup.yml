@@ -3,7 +3,7 @@
   remote_user: root
   gather_facts: false
   hosts: all
-  include_vars: common_vars.yml
+  ignore_errors: true
   tasks:
     - name: include common variables
       include_vars: common-vars.yml

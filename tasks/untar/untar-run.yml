@@ -24,10 +24,22 @@
 
 # Run the untar
 - name: Untar the kernel
-  shell: time tar -xf {{ glusterfs_perf_mountpoint }}/untar/linux-5.0.tar.xz -C {{ glusterfs_perf_mountpoint }}/untar/ > {{ glusterfs_perf_resdir }}/untar/untar.results.out 2>&1
+  shell: tar -xf {{ glusterfs_perf_mountpoint }}/untar/linux-5.0.tar.xz -C {{ glusterfs_perf_mountpoint }}/untar/ > {{ glusterfs_perf_resdir }}/untar/untar.results.out 2>&1
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  register: untar_output
+
+# Format the untar time in json format
+- name: Format the untar time in json format
+  shell: echo '{"time"{{ ":" }}{{ untar_output.delta }}}' > {{ glusterfs_perf_resdir }}/untar/untar.json
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
 
 # Clean the untar directory
 - name: Clean the untar directory
   shell: time rm -rf {{ glusterfs_perf_mountpoint }}/untar/ > {{ glusterfs_perf_resdir }}/untar/untar-rm-rf.results.out 2>&1
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  register: untar_rm_output
+
+# Format the untar cleanup time in json format
+- name: Format the cleanup time in json format
+  shell: echo '{"time"{{ ":" }}{{ untar_rm_output.delta }}}' > {{ glusterfs_perf_resdir }}/untar/untar-rm-rf.json
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
