@@ -4,8 +4,6 @@
 # But as it is 'nightly', it runs the 'default' vanilla script from
 # the repository. Make sure there are no local changes in repo.
 
-PERF_SCRIPT="/etc/ansible/roles/glusterfs.perf/playbook/run_perfs.sh"
-
 ANSIBLE_DIR="/etc/ansible/roles/glusterfs.perf"
 if [ ! -d $ANSIBLE_DIR ]; then
     echo "$ANSIBLE_DIR not found, exiting..."
@@ -38,25 +36,34 @@ parse_args $@
 
 # Make sure there are no local changes
 cd $ANSIBLE_DIR
-git stash
+#git stash
 
 # Run the below script
 cd playbooks
 
 if [ "x$repo" != "x" ]; then
-    git grep -l git_repo | xargs sed -i "s/#git_repo/glusterfs_perf_git_repo: $repo/g"
+    echo -n "Adding $repo to relevant files  "
+    # '/' is used in $repo string.
+    git grep -l "# git_repo" | grep yml | xargs sed -i -e "s@# git_repo@glusterfs_perf_git_repo: $repo@g"
+    echo "OK"
 fi
 
 if [ "x$refspec" != "x" ]; then
-    git grep -l git_refspec | xargs sed -i "s/#git_refspec/glusterfs_perf_git_refspec: $refspec/g"
+    echo -n "Adding $refspec to relevant files  "
+    git grep -l "# git_refspec" | grep yml | xargs sed -i -e "s@# git_refspec@glusterfs_perf_git_refspec: $refspec@g"
+    echo "OK"
 fi
 
 if [ "x$version" != "x" ]; then
-    git grep -l git_version | xargs sed -i "s/#git_version/glusterfs_perf_git_version: $version/g"
+    echo -n "Adding $version to relevant files  "
+    git grep -l "# git_version" | grep yml | xargs sed -i -e "s@# git_version@glusterfs_perf_git_version: $version@g"
+    echo "OK"
 fi
 
 if [ "x$tag" != "x" ]; then
-    git grep -l "perf_tag: " | xargs sed -i "s/perf_tag: nightly/perf_tag: $tag/g"
+    echo -n "Adding $tag to relevant files  "
+    git grep -l "perf_tag: "| grep yml | xargs sed -i -e "s/_perf_tag: nightly/_perf_tag: $tag/g"
+    echo "OK"
 fi
 
 #Emails should be 'comma' separated
@@ -64,12 +71,21 @@ if [ "x$emails" != "x" ]; then
     IFS=','
     e_arr=($emails)
     for email in ${e_arr[@]}; do
-        git grep -l "#Add email" | xargs sed -i "s/\(.*\)#Add email/\1- $email\n\1#Add email/g"
+        echo "Adding $email to relevant files  "
+        git grep -l "# Add email" | grep yml | xargs sed -i -e "s/\(.*\)# Add email/\1- $email\n\1# Add email/g"
     done
 fi
 
-$(PERF_SCRIPT)
+# Below should be uncommented if you are testing
+# anything related to script itself
+# -----
+# echo -n "enter any key to start the run... "
+# read
+
+PERF_SCRIPT="run_perfs.sh"
+
+. $PERF_SCRIPT
 
 # get back the changes as is (but now on the master)
-git stash apply
+#git stash apply
 

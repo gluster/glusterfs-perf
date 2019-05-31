@@ -79,7 +79,8 @@ If you need to run the whole tests on any of the patch from https://review.glust
 # cd /etc/ansible/roles/glusterfs.perf
 # ./playbooks/run_perfs-with-patch.sh -t new-tag -s refs/changes/76/22576/3 -e me@gluster.org,you@someother.org,she@my.org,he@your.org
 
-# ./playbooks/run_perfs-with-patch.sh -t new-tag -v release-6 -e me@gluster.org,you@someother.org,she@my.org,he@your.org
+# git stash
+# ./playbooks/run_perfs-with-patch.sh -t another-tag -v release-6 -e me@gluster.org,you@someother.org,she@my.org,he@your.org
 
 
 ```

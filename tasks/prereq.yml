@@ -66,7 +66,9 @@
 # If there are local changes, git checkout etc doesn't work.
 # The directory may not exist in first run, which is not an error
 - name: Clean glusterfs source directory
-  command: git clean -f
+  shell: |
+      git clean -f
+      git stash
   ignore_errors: true
   args:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
