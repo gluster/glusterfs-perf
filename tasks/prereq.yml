@@ -63,19 +63,28 @@
     - python get-pip.py
     - pip install pexpect
 
-- name: Git checkout
+# If there are local changes, git checkout etc doesn't work.
+# The directory may not exist in first run, which is not an error
+- name: Clean glusterfs source directory
+  command: git clean -f
+  ignore_errors: true
+  args:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+
+- name: Git checkout glusterfs
   git:
     depth: 1
     clone: yes
     update: yes
     repo: "{{ glusterfs_perf_git_repo | default('https://github.com/gluster/glusterfs.git') }}"
     dest: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
-    #refspec: refs/changes/{{ (patch | string)[-2:] }}/{{ patch }}/{{ patchset }}
     version: "{{ glusterfs_perf_git_version | default('master') }}"
-    refspec: "{{ glusterfs_perf_git_refspec | default(omit) }}"
+  when: glusterfs_perf_git_refspec is not defined
 
-- name: Fetch HEAD
-  command: git checkout -b test-{{ ansible_date_time.epoch }} FETCH_HEAD
+- name: Git Checkout glusterfs (refspec)
+  shell: |
+      git fetch {{ glusterfs_perf_git_repo }} {{ glusterfs_perf_git_refspec }} &&
+      git checkout -b test-{{ ansible_date_time.epoch }} FETCH_HEAD
   args:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
   when: glusterfs_perf_git_refspec is defined
@@ -119,6 +128,14 @@
   args:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
 
+# There can be some generated .c files, which gives an warning of 'overwriting'
+# if make clean is not done before
+- name: Clean glusterfs source directory
+  make:
+    chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+    target: clean
+
+# Can't do make install in a single command with this module
 - name: Build and install GlusterFS
   make:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
