@@ -70,6 +70,20 @@ glusterfs-perf role and change the variables appropriately and run the command:
 
 \# gluster-ansible -i \<inventory-file\> cluster_setup.yml
 
+Scripts to run a particular patch
+---------------------------------
+
+If you need to run the whole tests on any of the patch from https://review.gluster.org use the below command.
+
+```
+# cd /etc/ansible/roles/glusterfs.perf
+# ./playbooks/run_perfs-with-patch.sh -t new-tag -s refs/changes/76/22576/3 -e me@gluster.org,you@someother.org,she@my.org,he@your.org
+
+# ./playbooks/run_perfs-with-patch.sh -t new-tag -v release-6 -e me@gluster.org,you@someother.org,she@my.org,he@your.org
+
+
+```
+
 
 License
 -------

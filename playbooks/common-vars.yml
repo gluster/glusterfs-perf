@@ -11,10 +11,14 @@
 # in https://review.gluster.org, particular patch.
 #
 # glusterfs_perf_git_refspec: refs/changes/36/20636/21
+# git_repo
+# git_refspec
+# git_version
 
 glusterfs_perf_tag: nightly
+
 glusterfs_perf_to_list:
     - sac@redhat.com
     - atumball@redhat.com
-    # Add your email address here
+    # Add email
 
