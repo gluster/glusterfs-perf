@@ -9,6 +9,14 @@ if [ ! -d $VARS_DIR ]; then
     exit 1
 fi
 
+LOCK_FILE="/var/run/gluster-perf.pid"
+if [ -e $LOCK_FILE ] ; then
+    echo "another process is running, or stale $LOCK_FILE found"
+    exit 1
+fi
+
+date > ${LOCK_FILE}
+
 cd $VARS_DIR
 # Make sure we start with a clean slate
 # This is a overkill but can't help
@@ -27,3 +35,5 @@ done
 cd ../
 
 ansible-playbook -i ./email-vars.yml ./sendmail-playbook.yml
+
+rm ${LOCK_FILE}
