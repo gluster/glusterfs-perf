@@ -10,9 +10,6 @@
 
 - name: Collect System Facts in output file
   shell: |
-     echo "git log -n3" >> {{ glusterfs_perf_ofile }}
-     cd {{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }} && git log --oneline -n 3 >> {{ glusterfs_perf_ofile }}
-     echo >> {{ glusterfs_perf_ofile }}
      echo Tag: {{ glusterfs_perf_tag }} >> {{ glusterfs_perf_ofile }}
      echo Version: {{ glusterfs_perf_git_version | default('master') }} >> {{ glusterfs_perf_ofile }}
      echo refspec: {{ glusterfs_perf_git_refspec | default('none') }} >> {{ glusterfs_perf_ofile }}
