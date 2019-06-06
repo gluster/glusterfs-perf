@@ -4,7 +4,18 @@
   shell: |
      # TODO: handle the long arguments
      python /etc/ansible/roles/glusterfs.perf/plot/compare-nightly.py -r {{ glusterfs_perf_resdir_base }} -t {{ glusterfs_perf_tag }} > {{ glusterfs_perf_ofile }}
-     echo {{ glusterfs_perf_git_version|default('') }} {{ glusterfs_perf_git_refspec|default('') }} >> {{ glusterfs_perf_ofile }}
+     exit 0
+  delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
+  run_once: true
+
+- name: Collect System Facts in output file
+  shell: |
+     echo "git log -n3" >> {{ glusterfs_perf_ofile }}
+     cd {{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }} && git log --oneline -n 3 >> {{ glusterfs_perf_ofile }}
+     echo >> {{ glusterfs_perf_ofile }}
+     echo Tag: {{ glusterfs_perf_tag }} >> {{ glusterfs_perf_ofile }}
+     echo Version: {{ glusterfs_perf_git_version | default('master') }} >> {{ glusterfs_perf_ofile }}
+     echo refspec: {{ glusterfs_perf_git_refspec | default('none') }} >> {{ glusterfs_perf_ofile }}
      exit 0
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
@@ -19,10 +30,12 @@
 - name: Send the attachment as mail
   mail:
      host: 127.0.0.1
-     subject: Nightly perf test results - {{ ansible_date_time.date }}
+     subject: Perf test results ({{ glusterfs_perf_tag }}) - {{ ansible_date_time.date }}
      body: "{{ msgbody['content'] | b64decode }}"
-     from: "{{ glusterfs_perf_mail_sender | default('sac@redhat.com') }}"
+     from: "{{ glusterfs_perf_mail_sender | default('nobody@gluster.org (GlusterFS-Perf)') }}"
      to: "{{ glusterfs_perf_to_list | default('atumball@redhat.com') }}"
+     #headers:
+     #    - Reply-To="{{ glusterfs_perf_mail_sender | default('atumball@redhat.com') }}"
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
 

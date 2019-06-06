@@ -93,6 +93,9 @@ def main(argv):
 
     print(d)
     dump_results(ops)
+
+    print("---")
+    print("*** - getxattr results seems to be not consistent, ignore them for timebeing")
     print("==== End of results ====\n")
 
     return
