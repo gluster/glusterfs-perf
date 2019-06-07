@@ -7,6 +7,14 @@
   delegate_to: "{{ glusterfs_perf_client | default(glusterfs_perf_server) }}"
   run_once: true
 
+- name: Create a temporary directory to store profiles
+  file:
+     state: directory
+     path: "{{ glusterfs_perf_resdir }}/smallfile/"
+  delegate_to: "{{ glusterfs_perf_server }}"
+  run_once: true
+  ignore_errors: true
+
 # Import the tests
 - import_tasks: create.yml
   tags: create

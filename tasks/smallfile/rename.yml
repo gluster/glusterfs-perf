@@ -38,3 +38,11 @@
      - create
      - rename
      - delete-renamed
+
+- name: take profile info output.
+  shell: |
+      gluster volume profile {{ glusterfs_perf_volume }} info >> {{glusterfs_perf_resdir}}/smallfile/rename-profile
+      exit 0
+  delegate_to: "{{ glusterfs_perf_server }}"
+  run_once: true
+  ignore_errors: true

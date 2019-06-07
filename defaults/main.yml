@@ -26,6 +26,10 @@ gluster_infra_fw_ports:
     - 5900-6923/tcp
     - 5666/tcp
     - 16514/tcp
+    - 2003/tcp
+    - 2004/tcp
+    - 7002/tcp
+    - 80/tcp
 gluster_infra_fw_permanent: true
 gluster_infra_fw_state: enabled
 gluster_infra_fw_zone: public

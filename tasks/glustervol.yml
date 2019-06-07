@@ -26,6 +26,12 @@
   delegate_to: "{{ glusterfs_perf_server }}"
   when: glusterfs_perf_volume is defined
 
+- name: Enable gluster profile info
+  command: gluster volume profile {{ glusterfs_perf_volume }} start
+  run_once: true
+  delegate_to: "{{ glusterfs_perf_server }}"
+  when: glusterfs_perf_volume is defined
+
 - name: Mount the volume
   mount:
      path: "{{ glusterfs_perf_mountpoint | default('/mnt/glusterfs') }}"
@@ -36,3 +42,9 @@
   delegate_to: "{{ item }}"
   run_once: true
   with_items: "{{ glusterfs_perf_clients }}"
+
+- name: Enable gluster metrics
+  shell: |
+       # Move the script to background
+       (python /usr/src/glustermetrics/gmetrics.py --graphite-server {{ glusterfs_perf_server }} &);
+       exit 0

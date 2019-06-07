@@ -16,6 +16,7 @@ if [ -e $LOCK_FILE ] ; then
 fi
 
 date > ${LOCK_FILE}
+grep glusterfs_perf_tag ../common-vars.yml >> ${LOCK_FILE}
 
 cd $VARS_DIR
 # Make sure we start with a clean slate

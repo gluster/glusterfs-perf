@@ -61,7 +61,9 @@
   with_items:
     - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
     - python get-pip.py
-    - pip install pexpect
+    - pip install pexpect graphitesend
+    - pip install git+https://github.com/gluster/glustercli-python.git
+
 
 # If there are local changes, git checkout etc doesn't work.
 # The directory may not exist in first run, which is not an error
@@ -148,3 +150,17 @@
   make:
     chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
     target: distclean
+
+- name: Clone glustermetrics git repository
+  git:
+    clone: yes
+    depth: 1
+    update: yes
+    dest: "{{ glustermetrics_perf_git_dest | default('/usr/src/glustermetrics') }}"
+    repo: https://github.com/amarts/glustermetrics
+
+- name: setup glustermetrics conf file
+  copy:
+      src: "{{ glustermetrics_perf_git_dest | default('/usr/src/glustermetrics') }}/gmetrics.conf.sample"
+      dest: "{{ glustermetrics_perf_git_dest | default('/usr/src/glustermetrics') }}/gmetrics.conf"
+      force: no

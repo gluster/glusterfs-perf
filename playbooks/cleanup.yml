@@ -64,3 +64,6 @@
        shell: for br in $(git branch | grep test); do git branch -D $br; done
        args:
          chdir: "{{ glusterfs_perf_git_dest | default('/usr/src/glusterfs') }}"
+
+     - name: stop gmetrics python script
+       shell: pkill python # stops all python, but I guess for now it is OK.
