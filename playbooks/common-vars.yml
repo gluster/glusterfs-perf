@@ -16,9 +16,3 @@
 # git_version
 
 glusterfs_perf_tag: nightly
-
-glusterfs_perf_to_list:
-    - sac@redhat.com
-    - atumball@redhat.com
-    # Add email
-

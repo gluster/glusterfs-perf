@@ -24,4 +24,14 @@ gluster_nodes:
         glusterfs_perf_to_list:
             - sac@redhat.com
             - atumball@redhat.com
+            - avishwan@redhat.com
+            - pgurusid@redhat.com
+            - khiremat@redhat.com
+            - jahernan@redhat.com
+            - pkarampu@redhat.com
+            - rkothiya@redhat.com
+            - moagrawa@redhat.com
+            - rgowdapp@redhat.com
+            - kiyer@redhat.com
             # Add email
+
