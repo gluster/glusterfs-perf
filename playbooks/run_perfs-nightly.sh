@@ -14,7 +14,7 @@ fi
 
 cd $ANSIBLE_DIR
 
-git stash
+git checkout .
 git fetch origin
 git rebase origin/master 
 
@@ -24,6 +24,3 @@ git rebase origin/master
 git rebase --abort
 
 . ${PERF_SCRIPT}
-
-# get back the changes as is (but now on the master)
-git stash apply

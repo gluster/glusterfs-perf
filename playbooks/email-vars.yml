@@ -33,5 +33,10 @@ gluster_nodes:
             - moagrawa@redhat.com
             - rgowdapp@redhat.com
             - kiyer@redhat.com
+            - amukherj@redhat.com
+            - nbalacha@redhat.com
+            - skoduri@redhat.com
+            - sheggodu@redhat.com
+            - spalai@redhat.com
             # Add email
 

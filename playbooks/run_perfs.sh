@@ -15,10 +15,11 @@ if [ -e $LOCK_FILE ] ; then
     exit 1
 fi
 
+cd $VARS_DIR
+
 date > ${LOCK_FILE}
 grep glusterfs_perf_tag ../common-vars.yml >> ${LOCK_FILE}
 
-cd $VARS_DIR
 # Make sure we start with a clean slate
 # This is a overkill but can't help
 for var in *.yml; do
